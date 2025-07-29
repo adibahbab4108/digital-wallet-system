@@ -25,7 +25,6 @@ export interface IUser {
   isDeleted?: boolean;
   isVerified?: boolean;
   userStatus?: userStatus;
-
   auths: IAuth[];
   role: Role;
 }

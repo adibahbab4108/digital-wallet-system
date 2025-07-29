@@ -31,5 +31,14 @@ const shutdown =  () => {
   });
 };
 
+process.on("uncaughtException",(err)=>{
+  console.error("❌ Uncaught exception caught: ",err)
+  shutdown()
+})
+process.on("unhandledRejection",(err)=>{
+  console.error("❌ Unhandled rejection caught:",err)
+  shutdown()
+})
+
 process.on("SIGINT", shutdown); // Ctrl + C
 process.on("SIGTERM", shutdown); // From host system
