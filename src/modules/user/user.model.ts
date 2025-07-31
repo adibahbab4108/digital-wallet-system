@@ -1,4 +1,4 @@
-import { model, Schema } from "mongoose";
+import { model, Schema, Types } from "mongoose";
 import { IAuth, IUser, Role, userStatus } from "./user.interface";
 
 const authProviderSchema = new Schema<IAuth>(

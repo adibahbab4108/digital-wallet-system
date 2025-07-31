@@ -3,9 +3,11 @@ import { catchAsync } from "../../utils/catchAsync";
 import { sendResponse } from "../../utils/sendResponse";
 import { authService } from "./auth.service";
 
-const createUserWithCredentials = catchAsync(
+const createUser = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const user = await authService.createUserWithCredentials(req.body);
+
+    //delegating to userService
+    const user = await authService.createUser(req.body);
 
     sendResponse(res, {
       statusCode: 201,
@@ -29,7 +31,6 @@ const loginWithCredentials = catchAsync(
       secure: false,
     });
 
-
     sendResponse(res, {
       statusCode: 200,
       success: true,
@@ -40,6 +41,6 @@ const loginWithCredentials = catchAsync(
 );
 
 export const authController = {
-  createUserWithCredentials,
+  createUser,
   loginWithCredentials,
 };

@@ -1,3 +1,5 @@
+import { Types } from "mongoose";
+
 export interface IAuth {
   provider?: "google" | "credentials" | "admin";
   providerId?: string;
@@ -12,7 +14,6 @@ export enum userStatus {
   ACTIVE = "ACTIVE",
   INACTIVE = "INACTIVE",
   BLOCKED = "BLOCKED",
-  DELETED = "DELETED",
 }
 
 export interface IUser {
@@ -25,6 +26,6 @@ export interface IUser {
   isDeleted?: boolean;
   isVerified?: boolean;
   userStatus?: userStatus;
-  auths: IAuth[];
   role: Role;
+  auths: IAuth[];
 }

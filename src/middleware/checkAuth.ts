@@ -26,12 +26,11 @@ export const checkAuth =
 
       if (
         user.userStatus === userStatus.BLOCKED ||
-        user.userStatus === userStatus.DELETED ||
         user.userStatus === userStatus.INACTIVE
       ) {
         throw new Error(`User is ${user.userStatus}`);
       }
-      req.user = decoded
+      req.user = decoded;
       console.log(user);
       next();
     } catch (error) {

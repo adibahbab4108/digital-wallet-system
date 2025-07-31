@@ -2,11 +2,11 @@ import { NextFunction, Request, Response } from "express";
 import { catchAsync } from "../../utils/catchAsync";
 import { userService } from "./user.service";
 import { sendResponse } from "../../utils/sendResponse";
+import { authService } from "../auth/auth.service";
 
-//this createUser is used by admin to create new user
 const createUser = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    const user = await userService.createUser(req.body);
+    const user = await authService.createUser(req.body);
 
     sendResponse(res, {
       statusCode: 201,

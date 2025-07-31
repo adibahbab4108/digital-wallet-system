@@ -37,6 +37,8 @@ export const createUserZodSchema = z.object({
 
   userStatus: z.enum(Object.values(userStatus) as [string]).optional(),
   isDeleted: z.boolean().optional(),
+  role: z.enum(Object.values(Role) as [string]).optional(),
+  
 });
 
 export const updateUserZodSchema = z.object({
