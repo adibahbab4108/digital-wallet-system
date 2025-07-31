@@ -4,11 +4,15 @@ import { checkAuth } from "../../middleware/checkAuth";
 import { Role } from "./user.interface";
 export const userRoutes = Router();
 
+// create user is delegated to auth
 
 userRoutes.get(
   "/",
-  checkAuth(Role.ADMIN,Role.SUPER_ADMIN),
+  checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
   userController.getUsers
 );
-userRoutes.post('/add-money',checkAuth(Role.USER),)
-userRoutes.get("/:id", userController.getSingleUser);
+userRoutes.get(
+  "/:id",
+  checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
+  userController.getSingleUser
+);

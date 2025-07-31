@@ -1,5 +1,16 @@
 import { Types } from "mongoose";
 
+export interface ISimpleWalletInfo {
+  user: Types.ObjectId
+  balance: number;
+}
+
+export interface ITransactionInfo {
+  senderWallet: ISimpleWalletInfo;
+  send_amount: number;
+  receiverWallet: ISimpleWalletInfo;
+}
+
 export enum walletStatus {
   ACTIVE = "ACTIVE",
   INACTIVE = "INACTIVE",

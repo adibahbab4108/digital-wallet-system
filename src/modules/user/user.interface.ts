@@ -18,7 +18,7 @@ export enum userStatus {
 
 export interface IUser {
   name?: string;
-  email: string;
+  email: string;  
   password?: string;
   phone?: string;
   picture?: string;
