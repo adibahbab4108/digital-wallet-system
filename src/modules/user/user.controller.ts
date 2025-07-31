@@ -3,9 +3,9 @@ import { catchAsync } from "../../utils/catchAsync";
 import { userService } from "./user.service";
 import { sendResponse } from "../../utils/sendResponse";
 
+//this createUser is used by admin to create new user
 const createUser = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
-    console.log(req.body);
     const user = await userService.createUser(req.body);
 
     sendResponse(res, {
@@ -16,6 +16,34 @@ const createUser = catchAsync(
     });
   }
 );
+
+const getUsers = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const result = await userService.getUsers();
+
+    sendResponse(res, {
+      statusCode: 200,
+      success: true,
+      message: "Users fetched successfully",
+      data: result.data,
+      meta: result.meta,
+    });
+  }
+);
+const getSingleUser = catchAsync(
+  async (req: Request, res: Response, next: NextFunction) => {
+    const user = await userService.getSingleUser(req.params.id);
+
+    sendResponse(res, {
+      statusCode: 200,
+      success: true,
+      message: "User fetched successfully",
+      data: user,
+    });
+  }
+);
 export const userController = {
   createUser,
+  getUsers,
+  getSingleUser
 };

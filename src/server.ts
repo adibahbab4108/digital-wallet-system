@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import { envVars } from "./config/env.config";
 import app from "./app";
 import http from "http";
+import { seedSuperAdmin } from "./utils/seedSuperAdmin";
 
 //Behind the scenes, app.listen() calls http.createServer(app) though. But I need the server acces for extra flexibilty like to shut down server gracefully
 
@@ -19,9 +20,12 @@ const startServer = async () => {
     console.error("❌ Failed to start server:", err);
   }
 };
-startServer();
+(async () => {
+  await startServer();
+  await seedSuperAdmin();
+})();
 
-const shutdown =  () => {
+const shutdown = () => {
   console.log("🛑 Graceful shutdown started...");
 
   // Stop Express server
@@ -31,14 +35,14 @@ const shutdown =  () => {
   });
 };
 
-process.on("uncaughtException",(err)=>{
-  console.error("❌ Uncaught exception caught: ",err)
-  shutdown()
-})
-process.on("unhandledRejection",(err)=>{
-  console.error("❌ Unhandled rejection caught:",err)
-  shutdown()
-})
+process.on("uncaughtException", (err) => {
+  console.error("❌ Uncaught exception caught: ", err);
+  shutdown();
+});
+process.on("unhandledRejection", (err) => {
+  console.error("❌ Unhandled rejection caught:", err);
+  shutdown();
+});
 
 process.on("SIGINT", shutdown); // Ctrl + C
 process.on("SIGTERM", shutdown); // From host system

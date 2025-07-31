@@ -14,7 +14,7 @@ const authProviderSchema = new Schema<IAuth>(
 
 const userSchema = new Schema<IUser>(
   {
-    name: { type: String, required: true },
+    name: { type: String },
     email: { type: String, required: true, unique: true },
     password: { type: String, select: false }, // Password should not be returned in queries
     phone: { type: String, unique: true, sparse: true }, // Sparse make it optional but ensure uniqueness when it available

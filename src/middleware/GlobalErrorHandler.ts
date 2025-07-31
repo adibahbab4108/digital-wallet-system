@@ -15,7 +15,7 @@ export const GlobalErrorHAndler = (
   let statusCode = 500;
   let errorSources: any = [];
 
-  res.json({
+  res.status(err.status || statusCode).json({
     success: false,
     message,
     err: envVars.NODE_ENV === "development" ? err : null,

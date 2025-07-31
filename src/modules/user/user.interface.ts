@@ -1,6 +1,6 @@
 export interface IAuth {
-  provider: "google" | "credentials";
-  providerId: string;
+  provider?: "google" | "credentials" | "admin";
+  providerId?: string;
 }
 export enum Role {
   SUPER_ADMIN = "SUPER_ADMIN",
@@ -16,7 +16,7 @@ export enum userStatus {
 }
 
 export interface IUser {
-  name: string;
+  name?: string;
   email: string;
   password?: string;
   phone?: string;
