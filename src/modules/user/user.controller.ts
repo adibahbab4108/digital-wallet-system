@@ -42,8 +42,9 @@ const getSingleUser = catchAsync(
     });
   }
 );
+
 export const userController = {
   createUser,
   getUsers,
-  getSingleUser
+  getSingleUser,
 };

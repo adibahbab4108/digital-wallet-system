@@ -1,9 +1,5 @@
-import mongoose from "mongoose";
-import { envVars } from "../../config/env.config";
-import { Wallet } from "../wallet/wallet.model";
-import { IAuth, IUser } from "./user.interface";
+import { IUser } from "./user.interface";
 import { User } from "./user.model";
-import bcrypt from "bcryptjs";
 
 
 const updateUser = async (payload: Partial<IUser>) => {};
@@ -25,6 +21,7 @@ const getSingleUser = async (userId: string) => {
   if (!user) throw new Error("User not found");
   return user;
 };
+
 
 export const userService = {
   updateUser,

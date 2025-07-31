@@ -10,5 +10,5 @@ userRoutes.get(
   checkAuth(Role.ADMIN,Role.SUPER_ADMIN),
   userController.getUsers
 );
-userRoutes.post('/add-money',checkAuth(...Object.values(Role)))
+userRoutes.post('/add-money',checkAuth(Role.USER),)
 userRoutes.get("/:id", userController.getSingleUser);

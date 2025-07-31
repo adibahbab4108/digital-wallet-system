@@ -14,8 +14,8 @@ export const checkAuth =
         accessToken,
         envVars.JWT_ACCESS_SECRET_KEY
       ) as JwtPayload;
-
-      if (UserRoles.includes(decoded.role)) {
+      console.log(UserRoles);
+      if (!UserRoles.includes(decoded.role)) {
         throw new Error("You are not permitted to access this route");
       }
       const user = await User.findOne({ email: decoded.email });
@@ -31,7 +31,8 @@ export const checkAuth =
         throw new Error(`User is ${user.userStatus}`);
       }
       req.user = decoded;
-      console.log(user);
+      console.log("From authGuard",user);
+      console.log("Decoded data",decoded);
       next();
     } catch (error) {
       next(error);
