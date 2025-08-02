@@ -1,47 +1,64 @@
+import mongoose from "mongoose";
 import { envVars } from "../config/env.config";
 import { Role } from "../modules/user/user.interface";
 import { User } from "../modules/user/user.model";
 import bcrypt from "bcryptjs";
-import { userService } from "../modules/user/user.service";
-import { authService } from "../modules/auth/auth.service";
+import { Wallet } from "../modules/wallet/wallet.model";
+
 export const seedSuperAdmin = async () => {
+  const session = await mongoose.startSession();
+
   try {
+    session.startTransaction();
+
     const isSuperAdminExist = await User.findOne({
       email: envVars.SUPER_ADMIN_EMAIL,
-    });
+    }).session(session); // 🛡 Ensures read is inside the transaction
 
     if (isSuperAdminExist) {
-      return console.log("Super Admin already exist");
+      console.log("⚠️ Super Admin already exists");
+      await session.abortTransaction();
+      return;
     }
+
     const hashedPassword = await bcrypt.hash(
       envVars.SUPER_ADMIN_PASSWORD,
       Number(envVars.BCRYPT_SALT_ROUNDS)
     );
-    const super_admin = {
-      name: "Super Admin",
-      email: envVars.SUPER_ADMIN_EMAIL,
-      password: hashedPassword,
-      role: Role.SUPER_ADMIN,
-      isVerified: true,
-    };
-    authService.createUser(super_admin);
 
-    // const superAdmin = new User({
-    //   name:"Super Admin",
-    //   email: envVars.SUPER_ADMIN_EMAIL,
-    //   password: hashedPassword,
-    //   role: Role.SUPER_ADMIN,
-    //   isVerified: true,
-    //   auths: {
-    //     provider: "credentials",
-    //     providerId: envVars.SUPER_ADMIN_EMAIL,
-    //   },
-    // });
+    const [superAdmin] = await User.create(
+      [
+        {
+          name: "Super Admin",
+          email: envVars.SUPER_ADMIN_EMAIL,
+          password: hashedPassword,
+          role: Role.SUPER_ADMIN,
+          isVerified: true,
+          auths: {
+            provider: "credentials",
+            providerId: envVars.SUPER_ADMIN_EMAIL,
+          },
+        },
+      ],
+      { session }
+    );
 
-    // await superAdmin.save();
+    await Wallet.create(
+      [
+        {
+          user: superAdmin._id,
+        },
+      ],
+      { session }
+    );
 
-    console.log("✅ Super Admin created successfully");
-  } catch (error) {
-    console.error("❌ Failed to seed super admin:", error);
+    await session.commitTransaction();
+    console.log("✅ Super Admin seeded successfully");
+  } catch (error: any) {
+    await session.abortTransaction();
+    console.error("❌ Failed to seed Super Admin:", error.message);
+    throw error;
+  } finally {
+    session.endSession();
   }
 };

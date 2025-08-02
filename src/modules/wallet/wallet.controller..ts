@@ -90,6 +90,8 @@ const cashOut = catchAsync(
   }
 );
 
+
+
 const myWallet = catchAsync(
   async (req: Request, res: Response, next: NextFunction) => {
     const { userId } = req.user;
@@ -104,10 +106,11 @@ const myWallet = catchAsync(
   }
 );
 export const walletController = {
+  myWallet,
   addMoney,
   sendMoney,
   withdrawMoney,
   cashIn,
   cashOut,
-  myWallet,
+
 };

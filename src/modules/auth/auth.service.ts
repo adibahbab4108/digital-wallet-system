@@ -1,7 +1,7 @@
 import { envVars } from "../../config/env.config";
 import { comparePassword, hashPassword } from "../../utils/bcrypt";
 import { createUserToken } from "../../utils/jsonWebToken";
-import { IAuth, IUser } from "../user/user.interface";
+import { AgentStatus, IAuth, IUser, Role } from "../user/user.interface";
 import { User } from "../user/user.model";
 
 import { Wallet } from "../wallet/wallet.model";
@@ -27,6 +27,17 @@ const createUser = async (payload: Partial<IUser>) => {
       throw new Error("A user already already exist with this email");
     }
 
+    if (payload.role) {
+      const allowedRoles = [Role.AGENT, Role.USER];
+      if (!allowedRoles.includes(payload.role)) {
+        throw new Error(`You are not allowed to register as ${payload.role}.`);
+      }
+    }
+
+    //Set agentStatus to "PENDING" only for agent"
+    if (payload.role === Role.AGENT) {
+      payload.agentStatus = AgentStatus.PENDING;
+    }
     payload.password = await hashPassword(password);
 
     const authProvider: IAuth = {
@@ -56,7 +67,7 @@ const createUser = async (payload: Partial<IUser>) => {
     await session.abortTransaction();
     throw error;
   } finally {
-    session.endSession();
+      
   }
 };
 

@@ -1,5 +1,5 @@
 import z from "zod";
-import { Role, userStatus } from "./user.interface";
+import { AgentStatus, Role, userStatus } from "./user.interface";
 
 const passwordRegex =
   /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,20}$/;
@@ -9,7 +9,8 @@ export const createUserZodSchema = z.object({
   name: z
     .string()
     .min(3, { message: "Name must be at least 3 characters" })
-    .max(50, { message: "Name must be between 3 and 50 characters" }).optional(),
+    .max(50, { message: "Name must be between 3 and 50 characters" })
+    .optional(),
   email: z
     .string()
     .email()
@@ -38,7 +39,6 @@ export const createUserZodSchema = z.object({
   userStatus: z.enum(Object.values(userStatus) as [string]).optional(),
   isDeleted: z.boolean().optional(),
   role: z.enum(Object.values(Role) as [string]).optional(),
-  
 });
 
 export const updateUserZodSchema = z.object({
@@ -69,6 +69,7 @@ export const updateUserZodSchema = z.object({
     .optional(),
 
   userStatus: z.enum(Object.values(userStatus) as [string]).optional(),
+  agentStatus: z.enum(Object.values(AgentStatus) as [string]).optional(),
   isDeleted: z.boolean().optional(),
   isVerified: z.boolean({ error: "isVerified must be boolean" }).optional(),
   role: z.enum(Object.values(Role) as [string]),

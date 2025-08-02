@@ -15,6 +15,11 @@ export enum userStatus {
   INACTIVE = "INACTIVE",
   BLOCKED = "BLOCKED",
 }
+export enum AgentStatus {
+  PENDING = "PENDING",
+  APPROVED = "APPROVED",
+  SUSPENDED = "SUSPENDED",
+}
 
 export interface IUser {
   name?: string;
@@ -26,6 +31,7 @@ export interface IUser {
   isDeleted?: boolean;
   isVerified?: boolean;
   userStatus?: userStatus;
+  agentStatus?: AgentStatus;
   role: Role;
   auths: IAuth[];
 }
