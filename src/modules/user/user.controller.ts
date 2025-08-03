@@ -30,6 +30,22 @@ const getUsers = catchAsync(
     });
   }
 );
+
+const updateUser = catchAsync(
+  async (req: Request, res: Response, _next: NextFunction) => {
+    const userId = req.user.userId;
+    const updateData = req.body;
+
+    const updatedUser = await userService.updateUser(userId, updateData);
+    sendResponse(res, {
+      statusCode: 200,
+      success: true,
+      message: "User updated successfully",
+      data: updatedUser,
+    });
+  }
+);
+
 const getSingleUser = catchAsync(
   async (req: Request, res: Response, _next: NextFunction) => {
     const user = await userService.getSingleUser(req.params.id);
@@ -58,6 +74,7 @@ const getMe = catchAsync(
 export const userController = {
   createUser,
   getUsers,
+  updateUser,
   getSingleUser,
-  getMe
+  getMe,
 };

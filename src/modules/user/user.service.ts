@@ -1,6 +1,5 @@
+import { IUser } from "./user.interface";
 import { User } from "./user.model";
-
-
 
 const getUsers = async () => {
   const users = await User.find({});
@@ -21,8 +20,17 @@ const getSingleUser = async (userId: string) => {
   return user;
 };
 
+const updateUser = async (userId: string, updateData: Partial<IUser>) => {
+  const user = await User.findByIdAndUpdate(userId, updateData, {
+    new: true,
+    runValidators: true,
+  });
+  if (!user) throw new Error("User not found");
+  return user;
+};
 
 export const userService = {
   getUsers,
+  updateUser,
   getSingleUser,
 };
