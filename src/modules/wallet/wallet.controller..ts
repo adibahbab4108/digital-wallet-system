@@ -17,6 +17,7 @@ const addMoney = catchAsync(
     });
   }
 );
+
 const withdrawMoney = catchAsync(
   async (req: Request, res: Response, _next: NextFunction) => {
     const { userId } = req.user;
@@ -31,6 +32,7 @@ const withdrawMoney = catchAsync(
     });
   }
 );
+
 const sendMoney = catchAsync(
   async (req: Request, res: Response, _next: NextFunction) => {
     const { userId } = req.user;

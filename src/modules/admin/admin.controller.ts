@@ -3,6 +3,7 @@ import { catchAsync } from "../../utils/catchAsync";
 import { sendResponse } from "../../utils/sendResponse";
 import { adminActionService } from "./admin.service";
 
+// View all users, agents,
 const getUsers = catchAsync(
   async (req: Request, res: Response, _next: NextFunction) => {
     const result = await adminActionService.getUsers();
@@ -16,6 +17,8 @@ const getUsers = catchAsync(
     });
   }
 );
+
+// Get all users wallets
 const getWallet = catchAsync(
   async (req: Request, res: Response, _next: NextFunction) => {
     const result = await adminActionService.getWallet();
@@ -29,6 +32,8 @@ const getWallet = catchAsync(
     });
   }
 );
+
+// Approve/suspend agents
 const agentStatusApproval = catchAsync(
   async (req: Request, res: Response, _next: NextFunction) => {
     const { agentId } = req.params;
@@ -47,6 +52,8 @@ const agentStatusApproval = catchAsync(
     });
   }
 );
+
+// admins block/unblock wallets of users
 const updateWalletStatus = catchAsync(
   async (req: Request, res: Response, _next: NextFunction) => {
     const { walletStatus } = req.body;
@@ -65,6 +72,7 @@ const updateWalletStatus = catchAsync(
     });
   }
 );
+
 export const adminActionConstroller = {
   getUsers,
   getWallet,
