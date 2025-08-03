@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { catchAsync } from "../../utils/catchAsync";
 import { sendResponse } from "../../utils/sendResponse";
 import { adminActionService } from "./admin.service";
+import { TransactionQuery } from "../transaction/transaction.interface";
 
 // View all users, agents,
 const getUsers = catchAsync(
@@ -27,6 +28,20 @@ const getWallet = catchAsync(
       statusCode: 200,
       success: true,
       message: "Wallet fetched successfully",
+      data: result.data,
+      meta: result.meta,
+    });
+  }
+);
+const getTransactions = catchAsync(
+  async (req: Request, res: Response, _next: NextFunction) => {
+    const filters:TransactionQuery = req.query;
+    const result = await adminActionService.getTransactions(filters);
+
+    sendResponse(res, {
+      statusCode: 200,
+      success: true,
+      message: "Transactions fetched successfully",
       data: result.data,
       meta: result.meta,
     });
@@ -76,6 +91,7 @@ const updateWalletStatus = catchAsync(
 export const adminActionConstroller = {
   getUsers,
   getWallet,
+  getTransactions,
   agentStatusApproval,
   updateWalletStatus,
 };

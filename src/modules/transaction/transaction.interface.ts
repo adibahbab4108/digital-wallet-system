@@ -1,4 +1,14 @@
 import { Types } from "mongoose";
+// types/transactionQuery.ts
+export interface TransactionQuery {
+  page?:  number;
+  limit?: number;
+  type?: string;
+  status?: string;
+  userId?: string;
+  startDate?: string;
+  endDate?: string;
+}
 
 export enum TransactionType {
   SEND = "SEND", //user action

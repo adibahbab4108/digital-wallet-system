@@ -1,3 +1,5 @@
+import { TransactionQuery } from "../transaction/transaction.interface";
+import { Transaction } from "../transaction/transaction.model";
 import { AgentStatus, Role } from "../user/user.interface";
 import { User } from "../user/user.model";
 import { walletStatus } from "../wallet/wallet.interface";
@@ -26,6 +28,38 @@ const getWallet = async () => {
     data: wallets,
     meta: {
       total: totalWallet,
+    },
+  };
+};
+const getTransactions = async (filters: TransactionQuery) => {
+  const {
+    page = 1,
+    limit = 10,
+    type,
+    status,
+    userId,
+  } = filters;
+
+  if (page < 1 || limit < 1) {
+    throw new Error("Page and limit must be greater than 0");
+  }
+  const skip = (Number(page) - 1) * Number(limit);
+
+  const transactions = await Transaction.find({}).skip(skip).limit(Number(limit));
+
+  if (transactions.length === 0) throw new Error("No transactions found");
+
+  const numberOfTransactions = await Transaction.countDocuments();
+  const totalPages = Math.ceil(numberOfTransactions / Number(limit));
+  const transactionsInThisPage =  transactions.length
+
+  return {
+    data: transactions,
+    meta: {
+      total: numberOfTransactions,
+      transactionsInThisPage,
+      totalPages
+      
     },
   };
 };
@@ -74,6 +108,7 @@ const updateWalletStatus = async (walletStatus: string, userId: string) => {
 export const adminActionService = {
   getUsers,
   getWallet,
+  getTransactions,
   agentStatusApproval,
   updateWalletStatus,
 };

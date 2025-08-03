@@ -17,6 +17,13 @@ adminRoutes.get(
   checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
   adminActionConstroller.getWallet
 );
+
+adminRoutes.get(
+  "/transactions",
+  checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
+  adminActionConstroller.getTransactions
+);
+
 adminRoutes.patch(
   "/agent/:agentId/update-approval",
   validateWithZodSchema(updateAgentWithZodSchema),
