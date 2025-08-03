@@ -42,9 +42,22 @@ const getSingleUser = catchAsync(
     });
   }
 );
+const getMe = catchAsync(
+  async (req: Request, res: Response, _next: NextFunction) => {
+    const user = await userService.getSingleUser(req.user.userId);
+
+    sendResponse(res, {
+      statusCode: 200,
+      success: true,
+      message: "User fetched successfully",
+      data: user,
+    });
+  }
+);
 
 export const userController = {
   createUser,
   getUsers,
   getSingleUser,
+  getMe
 };

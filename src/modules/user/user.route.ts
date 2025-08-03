@@ -11,7 +11,11 @@ userRoutes.get(
   userController.getUsers
 );
 
-
+userRoutes.get(
+  "/profile",
+  checkAuth(...Object.values(Role)),
+  userController.getMe
+);
 userRoutes.get(
   "/:id",
   checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
