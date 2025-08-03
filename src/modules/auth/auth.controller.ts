@@ -4,7 +4,7 @@ import { sendResponse } from "../../utils/sendResponse";
 import { authService } from "./auth.service";
 
 const createUser = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response, _next: NextFunction) => {
 
     //delegating to userService
     const user = await authService.createUser(req.body);
@@ -19,16 +19,18 @@ const createUser = catchAsync(
 );
 
 const loginWithCredentials = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response, _next: NextFunction) => {
     const userJwtToken = await authService.loginWithCredentials(req.body);
 
     res.cookie("accessToken", userJwtToken.accessToken, {
       httpOnly: true,
       secure: false,
+      sameSite:"none"
     });
     res.cookie("refreshToken", userJwtToken.accessToken, {
       httpOnly: true,
       secure: false,
+      sameSite:"none"
     });
 
     sendResponse(res, {

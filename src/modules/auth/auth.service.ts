@@ -12,7 +12,7 @@ const createUser = async (payload: Partial<IUser>) => {
   const session = await mongoose.startSession();
   try {
     session.startTransaction();
-    const { email, password, ...rest } = payload;
+    const { email, password } = payload;
 
     if (!email) {
       throw new Error("Email is required");
@@ -67,7 +67,7 @@ const createUser = async (payload: Partial<IUser>) => {
     await session.abortTransaction();
     throw error;
   } finally {
-      
+      session.endSession()
   }
 };
 
@@ -101,9 +101,10 @@ const loginWithCredentials = async (payload: Partial<IUser>) => {
   const { email, password } = payload;
   const user = await User.findOne({ email }).select("+password");
   if (!user) throw new Error("User not found");
+  if(!password) throw new Error("Please write your password")
   if (!user.password) throw new Error("Password is not set for the user");
 
-  const isPasswordMathed = await comparePassword(password!, user.password);
+  const isPasswordMathed = await comparePassword(password, user.password);
 
   if (!isPasswordMathed) throw new Error("Password is incorrect");
 

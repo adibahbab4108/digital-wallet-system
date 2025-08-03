@@ -3,11 +3,11 @@ import { ZodTypeAny } from "zod";
 
 export const validateWithZodSchema =
   (zodSchema: ZodTypeAny) =>
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response, _next: NextFunction) => {
     try {
       req.body = await zodSchema.parseAsync(req.body);
-      next()
+      _next()
     } catch (error) {
-      next(error);
+      _next(error);
     }
   };

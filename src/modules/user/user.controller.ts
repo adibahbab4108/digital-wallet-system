@@ -5,7 +5,7 @@ import { sendResponse } from "../../utils/sendResponse";
 import { authService } from "../auth/auth.service";
 
 const createUser = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response, _next: NextFunction) => {
     const user = await authService.createUser(req.body);
 
     sendResponse(res, {
@@ -18,7 +18,7 @@ const createUser = catchAsync(
 );
 
 const getUsers = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response, _next: NextFunction) => {
     const result = await userService.getUsers();
 
     sendResponse(res, {
@@ -31,7 +31,7 @@ const getUsers = catchAsync(
   }
 );
 const getSingleUser = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response, _next: NextFunction) => {
     const user = await userService.getSingleUser(req.params.id);
 
     sendResponse(res, {

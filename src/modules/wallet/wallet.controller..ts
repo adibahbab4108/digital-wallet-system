@@ -4,7 +4,7 @@ import { walletService } from "./wallet.service";
 import { sendResponse } from "../../utils/sendResponse";
 
 const addMoney = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response, _next: NextFunction) => {
     const { userId } = req.user;
     const { amount } = req.body;
     const result = await walletService.addMoney({ userId, amount });
@@ -18,7 +18,7 @@ const addMoney = catchAsync(
   }
 );
 const withdrawMoney = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response, _next: NextFunction) => {
     const { userId } = req.user;
     const { amount } = req.body;
     const result = await walletService.withdrawMoney({ userId, amount });
@@ -32,7 +32,7 @@ const withdrawMoney = catchAsync(
   }
 );
 const sendMoney = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response, _next: NextFunction) => {
     const { userId } = req.user;
     const { receiverId, amount } = req.body;
     const payload = {
@@ -52,7 +52,7 @@ const sendMoney = catchAsync(
 );
 
 const cashIn = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response, _next: NextFunction) => {
     const { userId } = req.user;
     const { receiverId, amount } = req.body;
     const payload = {
@@ -71,7 +71,7 @@ const cashIn = catchAsync(
   }
 );
 const cashOut = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response, _next: NextFunction) => {
     const { userId } = req.user;
     const { receiverId, amount } = req.body;
     const payload = {
@@ -93,7 +93,7 @@ const cashOut = catchAsync(
 
 
 const myWallet = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response, _next: NextFunction) => {
     const { userId } = req.user;
     const result = await walletService.myWallet(userId);
 

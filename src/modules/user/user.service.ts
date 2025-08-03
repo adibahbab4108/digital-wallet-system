@@ -2,7 +2,7 @@ import { IUser } from "./user.interface";
 import { User } from "./user.model";
 
 
-const updateUser = async (payload: Partial<IUser>) => {};
+
 const getUsers = async () => {
   const users = await User.find({});
 
@@ -24,7 +24,6 @@ const getSingleUser = async (userId: string) => {
 
 
 export const userService = {
-  updateUser,
   getUsers,
   getSingleUser,
 };

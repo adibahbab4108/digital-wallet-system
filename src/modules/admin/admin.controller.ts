@@ -4,7 +4,7 @@ import { sendResponse } from "../../utils/sendResponse";
 import { adminActionService } from "./admin.service";
 
 const getUsers = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response, _next: NextFunction) => {
     const result = await adminActionService.getUsers();
 
     sendResponse(res, {
@@ -17,7 +17,7 @@ const getUsers = catchAsync(
   }
 );
 const getWallet = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response, _next: NextFunction) => {
     const result = await adminActionService.getWallet();
 
     sendResponse(res, {
@@ -30,7 +30,7 @@ const getWallet = catchAsync(
   }
 );
 const agentStatusApproval = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response, _next: NextFunction) => {
     const { agentId } = req.params;
     const { agentStatus } = req.body;
 
@@ -48,7 +48,7 @@ const agentStatusApproval = catchAsync(
   }
 );
 const updateWalletStatus = catchAsync(
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response, _next: NextFunction) => {
     const { walletStatus } = req.body;
     const { userId } = req.params;
 

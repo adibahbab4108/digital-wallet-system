@@ -1,19 +1,19 @@
-import { Errback, NextFunction, Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { envVars } from "../config/env.config";
 
 export const GlobalErrorHAndler = (
   err: any,
   req: Request,
   res: Response,
-  next: NextFunction
+  _next: NextFunction
 ) => {
   if (envVars.NODE_ENV === "development") {
     console.log(err);
   }
 
-  let message = err.message || "Internal Server Error";
-  let statusCode = 500;
-  let errorSources: any = [];
+  const message = err.message || "Internal Server Error";
+  const statusCode = 500;
+  // const errorSources: any = [];
 
   res.status(err.status || statusCode).json({
     success: false,

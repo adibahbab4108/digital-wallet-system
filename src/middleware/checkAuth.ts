@@ -2,10 +2,10 @@ import { NextFunction, Request, Response } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { envVars } from "../config/env.config";
 import { User } from "../modules/user/user.model";
-import { IUser, userStatus } from "../modules/user/user.interface";
+import {userStatus } from "../modules/user/user.interface";
 export const checkAuth =
   (...UserRoles: string[]) =>
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: Request, _res: Response, _next: NextFunction) => {
     try {
       const accessToken = req.headers.authorization;
       if (!accessToken) throw new Error("No token received");
@@ -33,8 +33,8 @@ export const checkAuth =
       req.user = decoded;
       console.log("From authGuard",user);
       console.log("Decoded data",decoded);
-      next();
+      _next();
     } catch (error) {
-      next(error);
+      _next(error);
     }
   };
