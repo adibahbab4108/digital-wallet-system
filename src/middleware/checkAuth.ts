@@ -14,7 +14,7 @@ export const checkAuth =
         accessToken,
         envVars.JWT_ACCESS_SECRET_KEY
       ) as JwtPayload;
-      
+
       if (!UserRoles.includes(decoded.role)) {
         throw new Error("You are not permitted to access this route");
       }
@@ -32,7 +32,6 @@ export const checkAuth =
       }
       req.user = decoded;
 
-      console.log("Decoded data",decoded);
       _next();
     } catch (error) {
       _next(error);

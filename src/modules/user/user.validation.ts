@@ -72,5 +72,5 @@ export const updateUserZodSchema = z.object({
   agentStatus: z.enum(Object.values(AgentStatus) as [string]).optional(),
   isDeleted: z.boolean().optional(),
   isVerified: z.boolean({ error: "isVerified must be boolean" }).optional(),
-  role: z.enum(Object.values(Role) as [string]),
+  role: z.enum(Object.values(Role) as [string]).optional(),
 });

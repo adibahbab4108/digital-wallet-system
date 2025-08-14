@@ -31,6 +31,7 @@ const getWallet = async () => {
     },
   };
 };
+
 const getTransactions = async (filters: TransactionQuery) => {
   const {
     page = 1,
@@ -59,7 +60,6 @@ const getTransactions = async (filters: TransactionQuery) => {
       total: numberOfTransactions,
       transactionsInThisPage,
       totalPages
-      
     },
   };
 };
@@ -84,7 +84,6 @@ const agentStatusApproval = async (
   }
   await agentAccount.save();
 
-  console.log(agentAccount);
 };
 const updateWalletStatus = async (walletStatus: string, userId: string) => {
   const userWallet = await Wallet.findOne({ user: userId });

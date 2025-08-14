@@ -58,6 +58,7 @@ const getSingleUser = catchAsync(
     });
   }
 );
+
 const getMe = catchAsync(
   async (req: Request, res: Response, _next: NextFunction) => {
     const user = await userService.getSingleUser(req.user.userId);
@@ -71,10 +72,25 @@ const getMe = catchAsync(
   }
 );
 
+const deleteUser = catchAsync(
+  async (req: Request, res: Response, _next: NextFunction) => {
+    const userId = req.params.id;
+    const result = await userService.deleteUser(userId);
+    
+    sendResponse(res, {
+      statusCode: 200,
+      success: true,
+      message: result.message,
+      data: null,
+    });
+  }
+);
+
 export const userController = {
   createUser,
   getUsers,
   updateUser,
+  deleteUser,
   getSingleUser,
   getMe,
 };
