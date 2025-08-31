@@ -2,12 +2,12 @@ import { NextFunction, Request, Response } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { envVars } from "../config/env.config";
 import { User } from "../modules/user/user.model";
-import {userStatus } from "../modules/user/user.interface";
+import { userStatus } from "../modules/user/user.interface";
 export const checkAuth =
   (...UserRoles: string[]) =>
   async (req: Request, _res: Response, _next: NextFunction) => {
     try {
-      const accessToken = req.headers.authorization;
+      const accessToken = req.headers.authorization || req.cookies.accessToken;
       if (!accessToken) throw new Error("No token received");
 
       const decoded = jwt.verify(

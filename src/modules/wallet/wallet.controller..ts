@@ -102,7 +102,7 @@ const myWallet = catchAsync(
     sendResponse(res, {
       statusCode: 200,
       success: true,
-      message: "CashOut successfull",
+      message: "Acount retrieved successfull",
       data: result,
     });
   }

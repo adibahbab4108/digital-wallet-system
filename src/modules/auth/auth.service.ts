@@ -12,7 +12,7 @@ const createUser = async (payload: Partial<IUser>) => {
   const session = await mongoose.startSession();
   try {
     session.startTransaction();
-    const { email, password } = payload;
+    const {email, password, role } = payload;
 
     if (!email) {
       throw new Error("Email is required");
@@ -27,15 +27,15 @@ const createUser = async (payload: Partial<IUser>) => {
       throw new Error("A user already already exist with this email");
     }
 
-    if (payload.role) {
+    if (role) {
       const allowedRoles = [Role.AGENT, Role.USER];
-      if (!allowedRoles.includes(payload.role)) {
-        throw new Error(`You are not allowed to register as ${payload.role}.`);
+      if (!allowedRoles.includes(role)) {
+        throw new Error(`You are not allowed to register as ${role}.`);
       }
     }
 
     //Set agentStatus to "PENDING" only for agent"
-    if (payload.role === Role.AGENT) {
+    if (role === Role.AGENT) {
       payload.agentStatus = AgentStatus.PENDING;
     }
     payload.password = await hashPassword(password);

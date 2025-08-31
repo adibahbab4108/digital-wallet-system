@@ -5,6 +5,7 @@ export const envVars = {
   PORT: process.env.PORT as string,
   MONGO_URI: process.env.MONGODB_URI as string,
   NODE_ENV: process.env.NODE_ENV as string,
+  FRONTEND_URI: process.env.FRONTEND_URI as string,
 
   BCRYPT_SALT_ROUNDS: process.env.BCRYPT_SALT_ROUNDS,
 

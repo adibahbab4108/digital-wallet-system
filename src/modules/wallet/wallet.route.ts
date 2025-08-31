@@ -31,7 +31,6 @@ walletRoutes.post("/cash-out", checkAuth(Role.AGENT), walletController.cashOut);
 //ONLY ADMIN | SUPER ADMIN ACCESS
 
 
-
 walletRoutes.get(
   "/my-wallet",
   checkAuth(...Object.values(Role)),

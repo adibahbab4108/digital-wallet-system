@@ -5,7 +5,6 @@ import { authService } from "./auth.service";
 
 const createUser = catchAsync(
   async (req: Request, res: Response, _next: NextFunction) => {
-
     //delegating to userService
     const user = await authService.createUser(req.body);
 
@@ -24,13 +23,13 @@ const loginWithCredentials = catchAsync(
 
     res.cookie("accessToken", userJwtToken.accessToken, {
       httpOnly: true,
-      secure: false,
-      sameSite:"none"
+      secure: true,
+      sameSite: "none",
     });
     res.cookie("refreshToken", userJwtToken.accessToken, {
       httpOnly: true,
-      secure: false,
-      sameSite:"none"
+      secure: true, //if secure:false, token will be removed when refresh in frontend
+      sameSite: "none",
     });
 
     sendResponse(res, {
@@ -41,8 +40,31 @@ const loginWithCredentials = catchAsync(
     });
   }
 );
+const logout = catchAsync(
+  async (req: Request, res: Response, next: NextFunction): Promise<any> => {
+    res.clearCookie("accessToken", {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+    });
+
+    res.clearCookie("refreshToken", {
+      httpOnly: true,
+      secure: true,
+      sameSite: "none",
+    });
+
+    sendResponse(res, {
+      statusCode: 200,
+      success: true,
+      message: "Logout successfull",
+      data: null,
+    });
+  }
+);
 
 export const authController = {
   createUser,
   loginWithCredentials,
+  logout,
 };

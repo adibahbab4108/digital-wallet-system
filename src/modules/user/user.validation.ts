@@ -12,7 +12,6 @@ export const createUserZodSchema = z.object({
     .max(50, { message: "Name must be between 3 and 50 characters" })
     .optional(),
   email: z
-    .string()
     .email()
     .refine((val) => val.includes("@"), { message: "Invalid email format" }),
   password: z

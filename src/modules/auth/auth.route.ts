@@ -11,3 +11,4 @@ authRoutes.post(
   authController.createUser
 );
 authRoutes.post("/login", authController.loginWithCredentials);
+authRoutes.post("/logout",authController.logout)
