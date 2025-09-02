@@ -8,7 +8,8 @@ export const GlobalErrorHandler = (
   _next: NextFunction
 ) => {
   if (envVars.NODE_ENV === "development") {
-    console.log(err);
+    console.log("Global Error",err);
+    console.log(req.body)
   }
 
   const message = err.message || "Internal Server Error";

@@ -12,7 +12,7 @@ const addMoney = catchAsync(
     sendResponse(res, {
       statusCode: 200,
       success: true,
-      message: `Tk ${amount} Cash in successful`,
+      message: `Tk ${amount} add money successful`,
       data: result,
     });
   }
@@ -47,46 +47,7 @@ const sendMoney = catchAsync(
     sendResponse(res, {
       statusCode: 200,
       success: true,
-      message: "Money send successfull",
-      data: transactionInfo,
-    });
-  }
-);
-
-const cashIn = catchAsync(
-  async (req: Request, res: Response, _next: NextFunction) => {
-    const { userId } = req.user;
-    const { receiverId, amount } = req.body;
-    const payload = {
-      userId,
-      amount,
-      receiverId,
-    };
-    const transactionInfo = await walletService.cashIn(payload);
-
-    sendResponse(res, {
-      statusCode: 200,
-      success: true,
-      message: "CashIn successfull",
-      data: transactionInfo,
-    });
-  }
-);
-const cashOut = catchAsync(
-  async (req: Request, res: Response, _next: NextFunction) => {
-    const { userId } = req.user;
-    const { receiverId, amount } = req.body;
-    const payload = {
-      userId,
-      amount,
-      receiverId,
-    };
-    const transactionInfo = await walletService.cashOut(payload);
-
-    sendResponse(res, {
-      statusCode: 200,
-      success: true,
-      message: "CashOut successfull",
+      message: `Tk ${amount} sent successfully`,
       data: transactionInfo,
     });
   }
@@ -111,8 +72,5 @@ export const walletController = {
   myWallet,
   addMoney,
   sendMoney,
-  withdrawMoney,
-  cashIn,
-  cashOut,
-
+  withdrawMoney
 };

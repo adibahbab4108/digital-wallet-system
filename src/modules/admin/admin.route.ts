@@ -13,6 +13,11 @@ adminRoutes.get(
   adminActionConstroller.getUsers
 );
 adminRoutes.get(
+  "/all-agents",
+  checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
+  adminActionConstroller.getAgents
+);
+adminRoutes.get(
   "/all-wallets",
   checkAuth(Role.ADMIN, Role.SUPER_ADMIN),
   adminActionConstroller.getWallet

@@ -14,6 +14,7 @@ export interface ITransactionInfo {
 export enum walletStatus {
   ACTIVE = "ACTIVE",
   INACTIVE = "INACTIVE",
+  DEACTIVE = "DEACTIVE",
   BLOCKED = "BLOCKED",
 }
 export enum currency {

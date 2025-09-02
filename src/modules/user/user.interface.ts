@@ -13,6 +13,7 @@ export enum Role {
 export enum userStatus {
   ACTIVE = "ACTIVE",
   INACTIVE = "INACTIVE",
+  DEACTIVE = "DEACTIVE",
   BLOCKED = "BLOCKED",
 }
 export enum AgentStatus {
@@ -23,7 +24,7 @@ export enum AgentStatus {
 
 export interface IUser {
   name?: string;
-  email: string;  
+  email: string;
   password?: string;
   phone?: string;
   picture?: string;

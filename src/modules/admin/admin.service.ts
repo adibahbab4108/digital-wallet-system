@@ -18,8 +18,22 @@ const getUsers = async () => {
     },
   };
 };
+const getAgents = async () => {
+  const agents = await User.find({role:Role.AGENT});
+
+  if (agents.length === 0) throw new Error("No agent found");
+
+  const totalAgents = await User.countDocuments();
+  return {
+    data: agents,
+    meta: {
+      total: totalAgents,
+    },
+  };
+};
+
 const getWallet = async () => {
-  const wallets = await Wallet.find({});
+  const wallets = await Wallet.find({}).populate("user");
 
   if (wallets.length === 0) throw new Error("No wallets found");
 
@@ -105,15 +119,17 @@ const agentStatusApproval = async (
 const updateWalletStatus = async (walletStatus: string, userId: string) => {
   const userWallet = await Wallet.findOne({ user: userId });
   const user = await User.findById(userId);
+
+   if (!user) {
+    throw new Error("No user found");
+  }
+
   if (!userWallet) {
     throw new Error("No wallet found for user");
   }
-  if (!user) {
-    throw new Error("No wallet found for user");
-  }
-
+ 
   if (user.role === Role.ADMIN || user.role === Role.SUPER_ADMIN) {
-    throw new Error("You cannot update ADMIN's role");
+    throw new Error("You are not permitted to update admin status");
   }
 
   userWallet.walletStatus = walletStatus as walletStatus;
@@ -123,6 +139,7 @@ const updateWalletStatus = async (walletStatus: string, userId: string) => {
 
 export const adminActionService = {
   getUsers,
+  getAgents,
   getWallet,
   getTransactions,
   agentStatusApproval,

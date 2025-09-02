@@ -18,6 +18,19 @@ const getUsers = catchAsync(
     });
   }
 );
+const getAgents = catchAsync(
+  async (req: Request, res: Response, _next: NextFunction) => {
+    const result = await adminActionService.getAgents();
+
+    sendResponse(res, {
+      statusCode: 200,
+      success: true,
+      message: "Agents fetched successfully",
+      data: result.data,
+      meta: result.meta,
+    });
+  }
+);
 
 // Get all users wallets
 const getWallet = catchAsync(
@@ -90,6 +103,7 @@ const updateWalletStatus = catchAsync(
 
 export const adminActionConstroller = {
   getUsers,
+  getAgents,
   getWallet,
   getTransactions,
   agentStatusApproval,
