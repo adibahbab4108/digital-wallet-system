@@ -9,6 +9,7 @@ import { adminRoutes } from "./modules/admin/admin.route";
 import cookieParser from "cookie-parser";
 import { envVars } from "./config/env.config";
 import { agentRoutes } from "./modules/agent/agent.route";
+import { transactionRoutes } from "./modules/transaction/transaction.route";
 const app = express();
 
 app.use(cookieParser());
@@ -27,6 +28,7 @@ app.use("/api/v1/agent", agentRoutes);
 app.use("/api/v1/admin", adminRoutes);
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/wallet", walletRoutes);
+app.use("/api/v1/transaction", transactionRoutes);
 
 app.get("/", (req: Request, res: Response) => {
   res.send("Hello World! I am Connected.");

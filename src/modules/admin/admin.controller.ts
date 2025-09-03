@@ -46,20 +46,6 @@ const getWallet = catchAsync(
     });
   }
 );
-const getTransactions = catchAsync(
-  async (req: Request, res: Response, _next: NextFunction) => {
-    const filters:TransactionQuery = req.query;
-    const result = await adminActionService.getTransactions(filters);
-
-    sendResponse(res, {
-      statusCode: 200,
-      success: true,
-      message: "Transactions fetched successfully",
-      data: result.data,
-      meta: result.meta,
-    });
-  }
-);
 
 // Approve/suspend agents
 const agentStatusApproval = catchAsync(
@@ -105,7 +91,6 @@ export const adminActionConstroller = {
   getUsers,
   getAgents,
   getWallet,
-  getTransactions,
   agentStatusApproval,
   updateWalletStatus,
 };
