@@ -3,45 +3,46 @@ import { catchAsync } from "../../utils/catchAsync";
 import { sendResponse } from "../../utils/sendResponse";
 import { agentService } from "./agent.service";
 
-const cashIn = catchAsync(
+const AddMoneyToUser = catchAsync(
   async (req: Request, res: Response, _next: NextFunction) => {
     const { userId } = req.user;
-    const { receiverId, amount } = req.body;
+    const { receiverEmail, amount } = req.body;
     const payload = {
       userId,
       amount,
-      receiverId,
+      receiverEmail,
     };
-    const transactionInfo = await agentService.cashIn(payload);
+    const transactionInfo = await agentService.AddMoneyToUser(payload);
 
     sendResponse(res, {
       statusCode: 200,
       success: true,
-      message: "CashIn successfull",
+      message: "AddMoneyToUser successfull",
       data: transactionInfo,
     });
   }
 );
-const cashOut = catchAsync(
+
+const WithdrawMoneyFromUser = catchAsync(
   async (req: Request, res: Response, _next: NextFunction) => {
     const { userId } = req.user;
-    const { receiverId, amount } = req.body;
+    const { receiverEmail, amount } = req.body;
     const payload = {
       userId,
       amount,
-      receiverId,
+      receiverEmail,
     };
-    const transactionInfo = await agentService.cashOut(payload);
+    const transactionInfo = await agentService.WithdrawMoneyFromUser(payload);
 
     sendResponse(res, {
       statusCode: 200,
       success: true,
-      message: "CashOut successfull",
+      message: `Withdrawn TK ${amount} From User successfull`,
       data: transactionInfo,
     });
   }
 );
 export const AgentController = {
-  cashIn,
-  cashOut,
+  AddMoneyToUser,
+  WithdrawMoneyFromUser,
 };

@@ -9,7 +9,7 @@ export const GlobalErrorHandler = (
 ) => {
   if (envVars.NODE_ENV === "development") {
     console.log("Global Error",err);
-    console.log(req.body)
+ 
   }
 
   const message = err.message || "Internal Server Error";

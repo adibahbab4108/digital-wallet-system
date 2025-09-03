@@ -5,25 +5,29 @@ import { AgentStatus, Role } from "../user/user.interface";
 import { Wallet } from "../wallet/wallet.model";
 import { TransactionStatus, TransactionType } from "../transaction/transaction.interface";
 import { Transaction } from "../transaction/transaction.model";
+import { th } from "zod/v4/locales/index.cjs";
 
-interface CashInOutPayload {
+interface AddMoneyToUserOutPayload {
   userId: string; // Agent's ID
   amount: number;
-  receiverId: string;
+  receiverEmail: string;
 }
 // AGENT ACTION
-const cashIn = async (payload: CashInOutPayload): Promise<ITransactionInfo> => {
-  const { userId: agentId, receiverId, amount } = payload;
+const AddMoneyToUser = async (payload: AddMoneyToUserOutPayload): Promise<ITransactionInfo> => {
+  const { userId: agentId, receiverEmail, amount } = payload;
 
   const session = await mongoose.startSession();
   try {
     session.startTransaction();
 
-    if (!agentId || !receiverId || typeof amount !== "number" || amount <= 0) {
-      throw new Error("Invalid input: amount must be a positive number.");
+    if (!agentId || !receiverEmail) {
+      throw new Error("Invalid userinfo: Agent ID and Receiver Email are required.");
+    }
+    if(typeof amount !== "number" || amount <= 0){
+      throw new Error("Invalid amount: Amount must be a positive number.");
     }
 
-    if (agentId === receiverId) {
+    if (agentId === receiverEmail) {
       throw new Error("Agent cannot cash in to their own wallet.");
     }
 
@@ -50,12 +54,13 @@ const cashIn = async (payload: CashInOutPayload): Promise<ITransactionInfo> => {
       throw new Error("Insufficient agent wallet balance.");
     }
 
-    const receiver = await User.findById(receiverId).session(session);
+    const receiver = await User.findOne({email:receiverEmail}).session(session);
     if (!receiver) throw new Error("Receiver user not found.");
 
-    const receiverWallet = await Wallet.findOne({ user: receiverId }).session(
+    const receiverWallet = await Wallet.findOne({ user: receiver._id }).session(
       session
     );
+    
     if (!receiverWallet) throw new Error("Receiver wallet not found.");
 
     if (
@@ -86,15 +91,15 @@ const cashIn = async (payload: CashInOutPayload): Promise<ITransactionInfo> => {
           type: TransactionType.SEND,
           status: TransactionStatus.COMPLETED,
           amount,
-          wallet: agentWallet._id,
+          senderWallet: agentWallet._id,
           initiatedBy: agentId,
-          receiver: receiverId,
+          receiver: receiver._id,
         },
         {
           type: TransactionType.CASH_IN,
           status: TransactionStatus.COMPLETED,
           amount,
-          wallet: receiverWallet._id,
+          receiverWallet: receiverWallet._id,
           initiatedBy: agentId,
           sender: agentId,
         },
@@ -123,10 +128,10 @@ const cashIn = async (payload: CashInOutPayload): Promise<ITransactionInfo> => {
   }
 };
 
-const cashOut = async (
-  payload: CashInOutPayload
+const WithdrawMoneyFromUser = async (
+  payload: AddMoneyToUserOutPayload
 ): Promise<ITransactionInfo> => {
-  const { userId: agentId, amount, receiverId: customerId } = payload;
+  const { userId: agentId, amount, receiverEmail: customerEmail } = payload;
 
   const session = await mongoose.startSession();
   try {
@@ -155,10 +160,10 @@ const cashOut = async (
     );
     if (!agentWallet) throw new Error("No wallet found for agent");
 
-    const customer = await User.findById(customerId).session(session);
+    const customer = await User.findOne({email:customerEmail}).session(session);
     if (!customer) throw new Error("Customer not found");
 
-    const customerWallet = await Wallet.findOne({ user: customerId }).session(
+    const customerWallet = await Wallet.findOne({ user: customer._id }).session(
       session
     );
     if (!customerWallet) throw new Error("No wallet found for customer");
@@ -193,7 +198,7 @@ const cashOut = async (
           type: TransactionType.SEND,
           status: TransactionStatus.COMPLETED,
           amount,
-          wallet: customerWallet._id,
+          receiverWallet: customerWallet._id,
           initiatedBy: agentId,
           receiver: agentId,
         },
@@ -201,7 +206,7 @@ const cashOut = async (
           type: TransactionType.RECEIVE,
           status: TransactionStatus.COMPLETED,
           amount,
-          wallet: agentWallet._id,
+          senderWallet: agentWallet._id,
           initiatedBy: agentId,
           sender: customer._id,
         },
@@ -231,5 +236,5 @@ const cashOut = async (
 };
 
 export const agentService={
-    cashIn, cashOut
+    AddMoneyToUser, WithdrawMoneyFromUser
 }

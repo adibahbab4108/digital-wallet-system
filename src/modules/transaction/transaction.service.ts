@@ -9,14 +9,15 @@ const getAllTransactions = async (filters: TransactionQuery) => {
   }
   const skip = (Number(page) - 1) * Number(limit);
 
-  const query: any = {};
+  const filterQuery: any = {};
   if (type && type !== "ALL") {
-    query.type = type;
+    filterQuery.type = type;
   }
 
-  if (status) query.status = status;
+  if (status) filterQuery.status = status;
+  if (userId) filterQuery.userId = userId;
 
-  const transactions = await Transaction.find(query)
+  const transactions = await Transaction.find(filterQuery)
     .populate("initiatedBy", "name")
     .populate({
       path: "senderWallet",
@@ -57,18 +58,17 @@ const getMyTransactions = async (filters: TransactionQuery) => {
   }
   const skip = (Number(page) - 1) * Number(limit);
 
-  const query: any = {};
+  const filterQuery: any = {};
   if (type && type !== "ALL") {
-    query.type = type;
+    filterQuery.type = type;
   }
   if (userId) {
-    query.initiatedBy = userId;
+    filterQuery.initiatedBy = userId;
   }
 
-  if (status) query.status = status;
-
-  const transactions = await Transaction.find(query)
-    .populate("initiatedBy", "name")
+  if (status) filterQuery.status = status;
+  
+  const transactions = await Transaction.find(filterQuery)
     .populate({
       path: "senderWallet",
       populate: {
@@ -88,14 +88,16 @@ const getMyTransactions = async (filters: TransactionQuery) => {
 
   if (transactions.length === 0) throw new Error("No transactions found");
 
-  const numberOfTransactions = await Transaction.countDocuments();
+  const numberOfTotalTransactions = await Transaction.countDocuments();
+  const numberOfFilteredTransactions = await Transaction.countDocuments(filterQuery);
+  const numberOfTransactions = userId ? numberOfFilteredTransactions : numberOfTotalTransactions;
   const totalPages = Math.ceil(numberOfTransactions / Number(limit));
   const transactionsInThisPage = transactions.length;
 
   return {
     data: transactions,
     meta: {
-      total: numberOfTransactions,
+      total: numberOfTotalTransactions,
       transactionsInThisPage,
       totalPages,
     },
