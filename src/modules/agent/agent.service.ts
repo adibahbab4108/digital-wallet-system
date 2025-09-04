@@ -76,6 +76,9 @@ const AddMoneyToUser = async (payload: AddMoneyToUserOutPayload): Promise<ITrans
     ) {
       throw new Error(`Agent's wallet is ${agentWallet.walletStatus}`);
     }
+    if(agent.email === receiver.email){
+      throw new Error("Agent cannot cash in to their own wallet");
+    }
 
     //Balance update
     agentWallet.balance -= amount;
@@ -181,6 +184,9 @@ const WithdrawMoneyFromUser = async (
     ) {
       throw new Error(`Agent wallet is ${agentWallet.walletStatus}`);
     }
+    if(agent.email === customer.email){
+      throw new Error("Agent cannot withdraw from their own wallet");
+    }
 
     if (customerWallet.balance < amount) {
       throw new Error("Customer has insufficient balance");
@@ -229,7 +235,7 @@ const WithdrawMoneyFromUser = async (
     };
   } catch (error: any) {
     await session.abortTransaction();
-    throw new Error(`Cash-out failed: ${error.message}`);
+    throw new Error(`Withdraw failed: ${error.message}`);
   } finally {
     session.endSession();
   }
