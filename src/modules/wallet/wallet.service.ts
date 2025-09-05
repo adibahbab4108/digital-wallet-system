@@ -7,6 +7,7 @@ import {
   TransactionStatus,
   TransactionType,
 } from "../transaction/transaction.interface";
+import { AgentStatus, Role } from "../user/user.interface";
 
 //USER | AGENT | ADMIN ACTION
 const addMoney = async (payload: { userId: string; amount: number }) => {
@@ -64,8 +65,12 @@ const addMoney = async (payload: { userId: string; amount: number }) => {
     session.endSession();
   }
 };
-const withdrawMoney = async (payload: { userId: string; amount: number }) => {
-  const { userId, amount } = payload;
+const withdrawMoney = async (payload: {
+  userId: string;
+  agentEmail: string;
+  amount: number;
+}) => {
+  const { userId, agentEmail, amount } = payload;
 
   const session = await mongoose.startSession();
 
@@ -81,33 +86,51 @@ const withdrawMoney = async (payload: { userId: string; amount: number }) => {
     }
 
     const user = await User.findById(userId).session(session);
+    const agent = await User.findOne({ email: agentEmail }).session(session);
+
+    
     if (!user) {
       throw new Error("User not found.");
     }
+    if (!agent || agent.role !== Role.AGENT) {
+      throw new Error("Agent not found with the provided email.");
+    }
+    if(agent.agentStatus=== AgentStatus.PENDING){
+      throw new Error("Agent account is still under review");
+    }
+    const agentWallet = await Wallet.findOne({ user: agent._id }).session(
+      session
+    );
+    if (!agentWallet) {
+      throw new Error("Agent wallet not found.");
+    }
 
-    const wallet = await Wallet.findOne({ user: userId }).session(session);
-    if (!wallet) {
-      throw new Error("Wallet not found.");
+    const userWallet = await Wallet.findOne({ user: userId }).session(session);
+    if (!userWallet) {
+      throw new Error("User wallet not found.");
     }
 
     if (
-      wallet.walletStatus === walletStatus.BLOCKED ||
-      wallet.walletStatus === walletStatus.INACTIVE
+      userWallet.walletStatus === walletStatus.BLOCKED ||
+      userWallet.walletStatus === walletStatus.INACTIVE
     ) {
-      throw new Error(`Wallet is currently ${wallet.walletStatus}.`);
+      throw new Error(`Wallet is currently ${userWallet.walletStatus}.`);
     }
 
-    if (wallet.balance < amount) {
+    if (userWallet.balance < amount) {
       throw new Error("Insufficient balance.");
     }
 
-    wallet.balance -= amount;
-    await wallet.save({ session });
+    userWallet.balance -= amount;
+    agentWallet.balance += amount;
+    await userWallet.save({ session });
+    await agentWallet.save({ session });
 
-    await Transaction.create(
+    const [transaction] = await Transaction.create(
       [
         {
-          wallet: wallet._id,
+          senderWallet: agentWallet._id,
+          receiverWallet: userWallet._id,
           initiatedBy: userId,
           type: TransactionType.WITHDRAW,
           status: TransactionStatus.COMPLETED,
@@ -118,7 +141,7 @@ const withdrawMoney = async (payload: { userId: string; amount: number }) => {
     );
 
     await session.commitTransaction();
-    return wallet;
+    return transaction;
   } catch (error: any) {
     await session.abortTransaction();
     throw new Error(`Failed to withdraw: ${error.message}`);
@@ -245,7 +268,7 @@ const myWallet = async (userId: string) => {
 
   const walletDoc = wallet.toObject();
   Object.assign(walletDoc, { transactionSummary: summary });
-  
+
   return walletDoc;
 };
 

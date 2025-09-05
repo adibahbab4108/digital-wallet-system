@@ -52,8 +52,8 @@ const getAllTransactions = async (filters: TransactionQuery) => {
   };
 };
 const getMyTransactions = async (filters: TransactionQuery) => {
-  const { page = 1, limit = 10, type, status, userId } = filters;
-  if (page < 1 || limit < 1) {
+  const { page = 1, limit , type, status, userId } = filters;
+  if (page < 1 || (limit && limit < 1)) {
     throw new Error("Page and limit must be greater than 0");
   }
   const skip = (Number(page) - 1) * Number(limit);

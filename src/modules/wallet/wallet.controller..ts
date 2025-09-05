@@ -21,8 +21,12 @@ const addMoney = catchAsync(
 const withdrawMoney = catchAsync(
   async (req: Request, res: Response, _next: NextFunction) => {
     const { userId } = req.user;
-    const { amount } = req.body;
-    const result = await walletService.withdrawMoney({ userId, amount });
+    const { agentEmail, amount } = req.body;
+    const result = await walletService.withdrawMoney({
+      userId,
+      agentEmail,
+      amount,
+    });
 
     sendResponse(res, {
       statusCode: 200,
@@ -53,8 +57,6 @@ const sendMoney = catchAsync(
   }
 );
 
-
-
 const myWallet = catchAsync(
   async (req: Request, res: Response, _next: NextFunction) => {
     const { userId } = req.user;
@@ -72,5 +74,5 @@ export const walletController = {
   myWallet,
   addMoney,
   sendMoney,
-  withdrawMoney
+  withdrawMoney,
 };

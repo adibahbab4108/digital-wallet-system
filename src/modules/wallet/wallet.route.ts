@@ -19,7 +19,7 @@ walletRoutes.post(
 walletRoutes.post(
   "/send-money",
   checkAuth(...Object.values(Role)),
-  walletController.sendMoney
+  walletController.sendMoney  
 );
 
 //ONLY ADMIN | SUPER ADMIN ACCESS
