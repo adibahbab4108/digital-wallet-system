@@ -11,12 +11,11 @@ const server = http.createServer(app);
 
 const startServer = async () => {
   try {
-    
     await mongoose.connect(envVars.MONGO_URI);
     console.log("Connected to MongoDB");
- 
+
     server.listen(envVars.PORT, () => {
-     console.log(`Server is running on port ${envVars.PORT}`);
+      console.log(`Server is running on port ${envVars.PORT}`);
     });
   } catch (err) {
     console.error("❌ Failed to start server:", err);

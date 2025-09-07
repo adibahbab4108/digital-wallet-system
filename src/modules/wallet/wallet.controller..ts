@@ -39,12 +39,12 @@ const withdrawMoney = catchAsync(
 
 const sendMoney = catchAsync(
   async (req: Request, res: Response, _next: NextFunction) => {
-    const { userId } = req.user;
-    const { receiverId, amount } = req.body;
+    const { email } = req.user;
+    const { receiverEmail, amount } = req.body;
     const payload = {
-      userId,
+      email,
       amount,
-      receiverId,
+      receiverEmail,
     };
     const transactionInfo = await walletService.sendMoney(payload);
 

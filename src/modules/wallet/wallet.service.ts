@@ -88,14 +88,13 @@ const withdrawMoney = async (payload: {
     const user = await User.findById(userId).session(session);
     const agent = await User.findOne({ email: agentEmail }).session(session);
 
-    
     if (!user) {
       throw new Error("User not found.");
     }
     if (!agent || agent.role !== Role.AGENT) {
       throw new Error("Agent not found with the provided email.");
     }
-    if(agent.agentStatus=== AgentStatus.PENDING){
+    if (agent.agentStatus === AgentStatus.PENDING) {
       throw new Error("Agent account is still under review");
     }
     const agentWallet = await Wallet.findOne({ user: agent._id }).session(
@@ -150,27 +149,31 @@ const withdrawMoney = async (payload: {
   }
 };
 const sendMoney = async (payload: {
-  userId: string;
+  email: string;
   amount: number;
-  receiverId: string;
+  receiverEmail: string;
 }) => {
-  const { userId, amount, receiverId } = payload;
+  const { email: userEmail, amount, receiverEmail } = payload;
   const session = await mongoose.startSession();
   try {
     session.startTransaction();
 
     if (!amount || amount <= 0) throw new Error("Invalid amount");
 
-    if (userId === receiverId) throw new Error("Cannot send money to yourself");
+    if (userEmail === receiverEmail)
+      throw new Error("Cannot send money to yourself");
 
-    const sender = await User.findById(userId).session(session);
-    const receiver = await User.findById(receiverId).session(session);
-    if (!sender || !receiver) throw new Error("Sender or Receiver not found");
-
-    const senderWallet = await Wallet.findOne({ user: userId }).session(
+    const sender = await User.findOne({ email: userEmail }).session(session);
+    const receiver = await User.findOne({ email: receiverEmail }).session(
       session
     );
-    const receiverWallet = await Wallet.findOne({ user: receiverId }).session(
+
+    if (!sender || !receiver) throw new Error("Sender or Receiver not found");
+
+    const senderWallet = await Wallet.findOne({ user: sender._id }).session(
+      session
+    );
+    const receiverWallet = await Wallet.findOne({ user: receiver._id }).session(
       session
     );
 
@@ -204,16 +207,16 @@ const sendMoney = async (payload: {
           amount,
           status: TransactionStatus.COMPLETED,
           senderWallet: senderWallet._id,
-          initiatedBy: userId,
-          receiverWallet: receiverId,
+          initiatedBy: sender._id,
+          receiverWallet: receiver._id,
         },
         {
           type: TransactionType.RECEIVE,
           amount,
           status: TransactionStatus.COMPLETED,
           receiverWallet: receiverWallet._id,
-          initiatedBy: userId,
-          senderWallet: userId,
+          initiatedBy: sender._id,
+          senderWallet: senderWallet._id,
         },
       ],
       { session, ordered: true }
@@ -223,11 +226,11 @@ const sendMoney = async (payload: {
 
     return {
       senderWallet: {
-        user: userId,
+        user: sender._id,
         balance: senderWallet.balance,
       },
       receiverWallet: {
-        user: receiverId,
+        user: receiver._id,
         balance: receiverWallet.balance,
       },
       amountSent: amount,
